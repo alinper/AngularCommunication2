@@ -1,5 +1,63 @@
 # AngularCommunication2
 
+## Comunicación a través del componente padre.
+Se puede usar cuando es fácil controlar el estado compartido entre los componentes a través de su componente principal y no parece que desee crear un nuevo servicio o crear un código repetitivo, debido a una variable.
+La implementación de este enfoque es casi la misma que la anterior, sin embargo, la barra lateral no recibe el componente de la barra lateral. En su lugar, el componente principal contiene la propiedad sideBarIsOpened que se pasa al componente de la barra lateral.
+
+### app.component.html
+```html
+app component
+
+<app-side-bar-toggle (toggle)="toggleSideBar()"></app-side-bar-toggle>
+<app-side-bar [isOpen]="sideBarIsOpened"></app-side-bar>
+```
+### app.component.ts
+```typescript
+@Component({
+  selector: 'my-app',
+  templateUrl: './app.component.html',
+  styleUrls: [ './app.component.css' ]
+})
+export class AppComponent {
+  sideBarIsOpened = false;
+
+  toggleSideBar(shouldOpen: boolean) {
+    this.sideBarIsOpened = !this.sideBarIsOpened;
+  }
+}
+```
+### side-bar-toggle.component.ts
+```typescript
+@Component({
+  selector: 'app-side-bar-toggle',
+  templateUrl: './side-bar-toggle.component.html',
+  styleUrls: ['./side-bar-toggle.component.css']
+})
+export class SideBarToggleComponent {
+
+  @Output() toggle: EventEmitter<null> = new EventEmitter();
+
+  @HostListener('click')
+  click() {
+    this.toggle.emit();
+  }
+
+}
+```
+### side-bar.component.ts
+```typescript
+@Component({
+  selector: 'app-side-bar',
+  templateUrl: './side-bar.component.html',
+  styleUrls: ['./side-bar.component.css']
+})
+export class SideBarComponent {
+
+  @HostBinding('class.is-open') @Input()
+  isOpen = false;
+
+}
+```
 Este proyecto se generó con [Angular CLI] (https://github.com/angular/angular-cli) versión 1.3.0.
 
 ## Development server
